@@ -16,6 +16,7 @@ public class PluginConfiguration : MediaBrowser.Model.Plugins.BasePluginConfigur
     {
         SamlConfigs = new SerializableDictionary<string, SamlConfig>();
         OidConfigs = new SerializableDictionary<string, OidConfig>();
+        SsoOnlyExemptUsernames = Array.Empty<string>();
     }
 
     /// <summary>
@@ -29,6 +30,18 @@ public class PluginConfiguration : MediaBrowser.Model.Plugins.BasePluginConfigur
     /// </summary>
     [XmlElement("OidConfigs")]
     public SerializableDictionary<string, OidConfig> OidConfigs { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether local username/password login is disabled
+    /// for all users except those listed in <see cref="SsoOnlyExemptUsernames"/>.
+    /// </summary>
+    public bool EnforceSsoOnly { get; set; }
+
+    /// <summary>
+    /// Gets or sets the usernames exempted from <see cref="EnforceSsoOnly"/>, so they keep
+    /// local login as a fallback (e.g. a break-glass admin account).
+    /// </summary>
+    public string[] SsoOnlyExemptUsernames { get; set; }
 }
 
 /// <summary>

@@ -9,6 +9,40 @@ const ssoConfigurationPage = {
 
     const folder_container = page.querySelector("#EnabledFolders");
     ssoConfigurationPage.populateFolders(folder_container);
+
+    ssoConfigurationPage.loadSsoOnlySettings(page);
+  },
+  loadSsoOnlySettings: (page) => {
+    ApiClient.getPluginConfiguration(ssoConfigurationPage.pluginUniqueId).then(
+      (config) => {
+        page.querySelector("#EnforceSsoOnly").checked = !!config.EnforceSsoOnly;
+        ssoConfigurationPage.fillTextList(
+          config.SsoOnlyExemptUsernames || [],
+          page.querySelector("#SsoOnlyExemptUsernames"),
+        );
+      },
+    );
+  },
+  saveSsoOnlySettings: (page) => {
+    return new Promise((resolve) => {
+      ApiClient.getPluginConfiguration(
+        ssoConfigurationPage.pluginUniqueId,
+      ).then((config) => {
+        config.EnforceSsoOnly = page.querySelector("#EnforceSsoOnly").checked;
+        config.SsoOnlyExemptUsernames = ssoConfigurationPage.parseTextList(
+          page.querySelector("#SsoOnlyExemptUsernames"),
+        );
+
+        ApiClient.updatePluginConfiguration(
+          ssoConfigurationPage.pluginUniqueId,
+          config,
+        ).then(function (result) {
+          Dashboard.processPluginConfigurationUpdateResult(result);
+          Dashboard.alert("Settings saved.");
+          resolve();
+        });
+      });
+    });
   },
   populateProviders: (page, providers) => {
     // Clear providers in case there are out of date ones
@@ -404,6 +438,13 @@ export default function (view) {
     current_mappings.push({ Role: "", Folders: [] });
     console.log(current_mappings);
     ssoConfigurationPage.populateRoleMappings(current_mappings, container);
+  });
+
+  view.querySelector("#SaveSsoOnlySettings").addEventListener("click", (e) => {
+    ssoConfigurationPage.saveSsoOnlySettings(view);
+
+    e.preventDefault();
+    return false;
   });
 
   view.querySelector("#sso-self-service-link").href =

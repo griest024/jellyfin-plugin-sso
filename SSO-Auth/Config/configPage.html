@@ -725,6 +725,90 @@
               </div>
             </div>
           </form>
+
+          <form id="sso-only-settings" class="esqConfigurationForm">
+            <div
+              is="emby-collapse"
+              title="SSO-Only Login"
+              class="verticalSection verticalSection-extrabottompadding"
+            >
+              <div class="collapseContent">
+                <div
+                  class="checkboxContainer checkboxContainer-withDescription"
+                >
+                  <label>
+                    <input
+                      is="emby-checkbox"
+                      id="EnforceSsoOnly"
+                      name="EnforceSsoOnly"
+                      type="checkbox"
+                      class="sso-toggle"
+                    />
+                    <span
+                      >Enforce SSO-only login (disable local password login for
+                      all users)</span
+                    >
+                  </label>
+                  <div class="fieldDescription checkboxFieldDescription">
+                    When enabled, every user (except those listed below) is
+                    locked out of local username/password login and can only
+                    authenticate via SSO.
+                    <br />
+                    <strong
+                      >The native username/password fields on the login page
+                      will still be visible</strong
+                    >
+                    &mdash; this can't be hidden from a plugin. Locked-out users
+                    attempting local login will see Jellyfin's generic "Invalid
+                    username or password" message; Jellyfin does not allow a
+                    plugin to customize that message.
+                    <br />
+                    New users are locked out automatically as soon as they're
+                    created. Saving this page with the toggle enabled also
+                    sweeps all existing users immediately: non-exempt users are
+                    locked out, and any user listed below is restored to local
+                    login if this feature had previously locked them out.
+                    Turning the toggle back off entirely does
+                    <strong>not</strong> automatically restore everyone; use the
+                    <code>Unregister/{username}</code>
+                    API endpoint to restore a specific user's local login in
+                    that case.
+                  </div>
+                </div>
+
+                <div class="inputContainer">
+                  <label
+                    class="inputLabel inputLabelUnfocused"
+                    for="SsoOnlyExemptUsernames"
+                    >Exempt Usernames:</label
+                  >
+                  <textarea
+                    is="emby-textarea"
+                    id="SsoOnlyExemptUsernames"
+                    type="text"
+                    class="emby-textarea"
+                  ></textarea>
+                  <div class="fieldDescription">
+                    One username per line. These users keep (or, if already
+                    locked out by this feature, regain as soon as you save)
+                    local login even when SSO-only enforcement is enabled above.
+                    <br />
+                    Strongly recommended: keep at least one exempt admin account
+                    as a fallback in case your SSO provider becomes unreachable.
+                  </div>
+                </div>
+
+                <button
+                  id="SaveSsoOnlySettings"
+                  is="emby-button"
+                  type="button"
+                  class="raised button-submit block emby-button"
+                >
+                  <span>Save</span>
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

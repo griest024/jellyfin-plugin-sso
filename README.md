@@ -256,6 +256,18 @@ These all require authorization. Append an API key to the end of the request: `c
 
 - POST `Unregister/username`: This "unregisters" a user from SSO. A JSON-formatted string must be posted with the new authentication provider. To reset to the default provider, use `Jellyfin.Server.Implementations.Users.DefaultAuthenticationProvider` like so: `curl -X POST -H "Content-Type: application/json" -d '"Jellyfin.Server.Implementations.Users.DefaultAuthenticationProvider"' "https://myjellyfin.example.com/sso/Unregister/username?api_key=API_KEY`
 
+### SSO-Only Login
+
+There are two top-level (non-per-provider) configuration options to force all users to authenticate via SSO instead of local username/password:
+
+- `enforceSsoOnly`: boolean. When enabled, every user (except those listed in `ssoOnlyExemptUsernames`) is locked out of local login. New users are locked out automatically the moment they're created, whether they were created by this plugin's SSO flow or manually through the Jellyfin dashboard. Saving the plugin configuration with this enabled also immediately sweeps every existing user: non-exempt users are locked out, and any user newly added to `ssoOnlyExemptUsernames` is restored to local login if this feature had previously locked them out. Turning `enforceSsoOnly` back off entirely does **not** automatically restore everyone that was previously locked out; use the `Unregister` endpoint above for that.
+- `ssoOnlyExemptUsernames`: array of strings. Usernames that keep (or, if already locked out by this feature, regain as soon as the config is saved) local login even when `enforceSsoOnly` is on. Strongly recommended: keep at least one exempt admin account as a fallback in case your SSO provider becomes unreachable.
+
+Two important limitations, inherent to how Jellyfin's login page and authentication pipeline work, not something this plugin can change:
+
+- The native username/password fields on the Jellyfin login page are **always visible**; there is no way for a plugin to hide them. Locked-out users can still attempt local login, they just won't be able to log in.
+- Jellyfin discards any auth-provider-specific error message before it reaches the browser: a locked-out user always sees the generic "Invalid username or password. Please try again." toast, never anything that mentions SSO.
+
 ## Limitations
 
 Logging in with an SSO account that has the same username as an existing Jellyfin account will override the permissions for the user. Use caution when overriding the administrator account!
