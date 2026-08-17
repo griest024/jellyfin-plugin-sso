@@ -8,6 +8,14 @@
     "owner": "griest024",
     "versions": [
       {
+        "changelog": "",
+        "checksum": "b30e5ae5fcb2ad714d57596afddb459e",
+        "sourceUrl": "https://github.com/griest024/jellyfin-plugin-sso/releases/download/4.1.0/sso-authentication_4.1.0.0.zip",
+        "targetAbi": "10.11.11.0",
+        "timestamp": "2026-08-17T02:35:37Z",
+        "version": "4.1.0"
+      },
+      {
         "changelog": "Nightly build\n",
         "checksum": "8cc1f83b3e42a005900446dc0c1fe897",
         "sourceUrl": "https://github.com/griest024/jellyfin-plugin-sso/releases/download/nightly/sso-authentication_0.0.0.9000.zip",
